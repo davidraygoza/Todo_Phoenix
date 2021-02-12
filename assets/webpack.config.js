@@ -12,7 +12,7 @@ module.exports = (env, options) => {
   return {
     optimization: {
       minimizer: [
-        new TerserPlugin({ cache: true, parallel: true, sourceMap: devMode }),
+        new TerserPlugin({ cache: true, parallel: true, sourceMap: false }),
         new OptimizeCSSAssetsPlugin({})
       ]
     },
@@ -38,12 +38,13 @@ module.exports = (env, options) => {
           }
         },
         {
-          test: /\.[s]?css$/,
+          test: /\.s(c|a)ss$/,
           use: [
+            "style-loader",
             MiniCssExtractPlugin.loader,
-            'css-loader',
-            'sass-loader',
-          ],
+            "css-loader",
+            "sass-loader"
+          ]
         }
       ]
     },

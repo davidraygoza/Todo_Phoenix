@@ -13,17 +13,25 @@ defmodule FullstackElixirReactWeb.Api.Schema do
   end
 
   mutation do
-    field :create_todo_item, non_null(:boolean) do
-      arg :content, non_null(:string)
-      resolve fn %{ content: content}, _ ->
-        case Todos.create_item(%{content: content}) do
-          {:ok, %Todos.Item{}} ->
-            {:ok, true}
-         _ ->
-          {:ok, false}
-        end
-      end
+    field :create_todo_item, :todo_item do
+      arg(:content, non_null(:string))
+
+      resolve(fn %{content: content}, _ ->
+        Todos.create_item(%{content: content})
+      end)
+
     end
+
+    field :delete_todo_item, :boolean do
+      arg(:id, non_null(:id))
+
+      resolve(fn %{id: id},_ ->
+        todo = Todos.get_item!(id)
+        Todos.delete_item(todo)
+        {:ok, true}
+      end)
+    end
+
     field :update_todo_item, :todo_item do
       arg(:id, non_null(:id))
       arg(:content, non_null(:string))
